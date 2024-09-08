@@ -602,4 +602,61 @@
     background-color: #2563eb;
   }
   
-  
+  .divMain2 {
+    padding-top: 30px;
+    width: 100%;
+    position: relative;
+}
+
+.fieldsetWrapper {
+    display: flex;
+    font-size: 20px;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px 20px;
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: #dae3f4;
+    margin-bottom: 20px;
+}
+
+.legendsWrapper1 {
+    width: fit-content;
+    font-size: 20px;
+    border: 2px solid black;
+    margin-left: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 0;
+    background-color: #4473c4;
+    color: white;
+}
+
+.formRow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+
+.inputAlignment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.inputAlignment .required {
+    margin-right: 20px; /* Adjust as needed */
+}
+
+.inputCustom {
+    flex: 1;
+    margin-left: 10px; /* Adjust as needed */
+}
+
+.validationError {
+    color: red;
+    font-size: 15px;
+    margin-left: 10px; /* Adjust as needed */
+}

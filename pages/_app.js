@@ -9,6 +9,17 @@ const unProtectedPath = {
     "/sample/tnnt_details": true,
     "/sample/role_user": true,
     "/sample/end_user": true,
+    "/sample/workflow": true,
+    "/sample/Attendance": true,
+    "/sample/Attendance2": true,
+    "/sample/Attendance3": true,
+    "/sample/Skill": true,
+    "/sample/CreateContactDetails": true,
+    "/25UI/2": true,
+    "/25UI/3": true,
+    "/25UI/4": true,
+    "/25UI/Skill": true,
+   
 };
 
 export default class MyApp extends React.Component {

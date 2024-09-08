@@ -19,7 +19,8 @@ export default class EmProjDet extends React.Component {
       editable: undefined,
       proj_name: "",
       start_date: "",
-      arr_dropdown: []
+      arr_dropdown: [],
+      dynamicRows: [{ id: 1, roleName: "" }],
     };
     stateData.editable = props.editable;
     if (props.data !== undefined) {
@@ -41,47 +42,18 @@ export default class EmProjDet extends React.Component {
       });
     }
   }
-  //#region Insert Function
-  async insertRecord() {
-    const {
-      proj_name,
-    } = this.state;
 
-    try {
-      const alertInitial = "";
-      let alertText = alertInitial;
+  handleAddRow = () => {
+    const { dynamicRows } = this.state;
+    const newRow = { id: dynamicRows.length + 1, roleName: "" };
+    this.setState({ dynamicRows: [...dynamicRows, newRow] });
+  };
 
-      if (proj_name === "") {
-        alertText += ". Name\n";
-      }
-
-      if (alertText !== alertInitial) {
-        Swal.fire({
-          title: "Fill these fields:\n",
-          html:
-            '<pre style="display: flex;text-align: justify;flex-direction: column;align-items: center;line-height: 1.5">' +
-            alertText +
-            "</pre>",
-          confirmButtonColor: Colors.primaryColor,
-          width: Colors.width,
-          allowOutsideClick: false,
-        });
-        return;
-      }
-
-      let data = {}
-    }
-    catch (err) {
-      Swal.fire({
-        text: err,
-        confirmButtonColor: Colors.red,
-        width: Colors.width,
-        allowOutsideClick: false,
-      });
-      this.setState({ is_loading: false });
-      console.log(err);
-    }
-  }
+  handleRoleChange = (index, event) => {
+    const { dynamicRows } = this.state;
+    dynamicRows[index].roleName = event.target.value;
+    this.setState({ dynamicRows });
+  };
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -97,7 +69,7 @@ export default class EmProjDet extends React.Component {
     return (
       <div className={styles.divMain1}>
         <fieldset className={styles.fieldsetWrapper}>
-          <legend className={styles.legendsWrapper1}>Section 1</legend>
+          <legend className={styles.legendsWrapper1}>Basic Details</legend>
           <Row className={styles.formRow}>
             <Col md={6}>
               <Form.Group
@@ -105,7 +77,7 @@ export default class EmProjDet extends React.Component {
                 controlId="proj_name"
               >
                 <Form.Label className={styles.required}>
-                  Name
+                  End User Name
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -119,93 +91,88 @@ export default class EmProjDet extends React.Component {
             <Col md={6}>
               <Form.Group
                 className={styles.controlGroup1}
-                controlId="start_date"
+                controlId="field2"
               >
-                <Form.Label className={styles.required}>Start Date</Form.Label>
-                <DatePicker
-                  className={styles.date1}
-                  dateFormat="dd-MM-yyyy"
-                  selected={start_date}
+                <Form.Label className={styles.required}>Field-2</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Field-2"
                 />
               </Form.Group>
             </Col>
-
-            <Form.Group className={styles.controlGroup2} controlId="role_id">
-              <Form.Control
-                as="select"
-                name="role_id"
-                required
+            <Col md={6}>
+              <Form.Group
+                className={styles.controlGroup1}
+                controlId="field3"
               >
-                <option value="" disabled>
-                  Select
-                </option>
-                <option value="1">Project Manager</option>
-                <option value="2">Branch Manager</option>
-              </Form.Control>
-            </Form.Group>
+                <Form.Label className={styles.required}>Field-3</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Field-3"
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group
+                className={styles.controlGroup1}
+                controlId="field4"
+              >
+                <Form.Label className={styles.required}>Field-4</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Field-4"
+                />
+              </Form.Group>
+            </Col>
           </Row>
         </fieldset>
       </div>
     );
   };
 
-  renderAddressTable = () => {
-    const {
-      proj_name,
-      start_date,
-      arr_dropdown,
-    } = this.state;
+  renderRoleUserDetails = () => {
+    const { dynamicRows } = this.state;
     return (
       <div className={styles.divMain1}>
         <fieldset className={styles.fieldsetWrapper}>
-          <legend className={styles.legendsWrapper1}>Section 2</legend>
-          <Row className={styles.formRow}>
-            <Col md={6}>
-              <Form.Group
-                className={styles.controlGroup1}
-                controlId="proj_name"
-              >
-                <Form.Label className={styles.required}>
-                  Name
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter name"
-                  value={proj_name}
-                  name="proj_name"
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group
-                className={styles.controlGroup1}
-                controlId="start_date"
-              >
-                <Form.Label className={styles.required}>Start Date</Form.Label>
-                <DatePicker
-                  className={styles.date1}
-                  dateFormat="dd-MM-yyyy"
-                  selected={start_date}
-                />
-              </Form.Group>
-            </Col>
-
-            <Form.Group className={styles.controlGroup2} controlId="role_id">
-              <Form.Control
-                as="select"
-                name="role_id"
-                required
-              >
-                <option value="" disabled>
-                  Select
-                </option>
-                {arr_dropdown.map((a) => (
-                  <option value={a.id}>{a.name}</option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          </Row>
+          <legend className={styles.legendsWrapper1}>Role User Details</legend>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Role Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dynamicRows.map((row, index) => (
+                <tr key={row.id}>
+                  <td>{row.id}</td>
+                  <td>
+                    <Form.Control
+                      as="select"
+                      value={row.roleName}
+                      onChange={(e) => this.handleRoleChange(index, e)}
+                      required
+                    >
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      <option value="Senior Project Manager">
+                        Senior Project Manager
+                      </option>
+                      <option value="Project Manager">
+                        Project Manager
+                      </option>
+                      <option value="Branch Manager">Branch Manager</option>
+                      <option value="Line Manager">Line Manager</option>
+                      <option value="Role User n-1">Role User n-1</option>
+                    </Form.Control>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <Button onClick={this.handleAddRow}>+</Button>
         </fieldset>
       </div>
     );
@@ -215,7 +182,8 @@ export default class EmProjDet extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit} className={styles.formWrapper}>
         {this.renderProjectDetails()}
-        {this.renderAddressTable()}
+        {this.renderRoleUserDetails()}
+        <Button type="submit">Submit</Button>
       </Form>
     );
   };
@@ -225,7 +193,6 @@ export default class EmProjDet extends React.Component {
     const {
       editable,
       is_loading,
-      editableOrder,
     } = this.state;
 
     return (
@@ -233,7 +200,7 @@ export default class EmProjDet extends React.Component {
         {is_loading && (
           <div className={"loadingWrapper"}>
             <div className={"innerLoadingWrapper"}>
-              <div class="bouncing-loader">
+              <div className="bouncing-loader">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -255,21 +222,6 @@ export default class EmProjDet extends React.Component {
             </p>
 
             {this.renderCreateRecordForm()}
-
-            <div className={styles.button}>
-              <div className={styles.button}>
-                <button
-                  className={`button`}
-                  onClick={() =>
-                    editable == undefined
-                      ? this.insertRecord()
-                      : editable && this.updateRecord()
-                  }
-                >
-                  {"Submit"}
-                </button>
-              </div>
-            </div>
 
             <div>
               <p style={{ color: "red", marginLeft: "3px", fontSize: "15px" }}>

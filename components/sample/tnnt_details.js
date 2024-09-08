@@ -10,64 +10,46 @@ import "bootstrap/dist/css/bootstrap.min.css";
 export default class Form1 extends React.Component {
   constructor(props) {
     super(props);
-    const stateData = {
+    this.state = {
       tnnt_id: global.config.tnnt_id,
-      username: "",
+      username: global.config.username || "",
       role_id: global.config.user_role,
       is_loading: false,
-      selectedData: undefined,
-      editable: undefined,
+      editable: props.editable,
+      id: props.data,
+      editableOrder: props.editableOrder,
       proj_name: "",
-      start_date: "",
-      arr_dropdown: [],
-      microservices: [
-        { id: 1, name: 'Contact Details', checked: false, startDate: null, endDate: null },
-        { id: 2, name: 'Tag Value Mapping', checked: false, startDate: null, endDate: null },
-        { id: 3, name: 'Microservice 3', checked: false, startDate: null, endDate: null },
-        { id: 4, name: 'Microservice 4', checked: false, startDate: null, endDate: null },
-        { id: 5, name: 'Microservice n', checked: false, startDate: null, endDate: null }
-      ],
       formData: {
-        tenantName: '',
-        fields2: '',
-        fields3: '',
-        fields4: ''
+        tenantName: "",
+        fields2: null,
+        fields3: null,
+        fields4: "",
+        fields5: "",
       },
       formErrors: {
-        tenantName: '',
-        fields2: '',
-        fields3: '',
-        fields4: ''
+        tenantName: "",
+        fields2: "",
+        fields3: "",
+        fields4: "",
+        fields5: "",
       },
+      microservices: [
+        { id: 1, name: "Contact Details", checked: false, startDate: null, endDate: null },
+        { id: 2, name: "Tag Value Mapping", checked: false, startDate: null, endDate: null },
+        { id: 3, name: "Microservice 3", checked: false, startDate: null, endDate: null },
+        { id: 4, name: "Microservice 4", checked: false, startDate: null, endDate: null },
+        { id: 5, name: "Microservice n", checked: false, startDate: null, endDate: null },
+      ],
     };
-    stateData.editable = props.editable;
-    if (props.data !== undefined) {
-      stateData.id = props.data;
-      stateData.editableOrder = props.editableOrder;
-    }
-
-    this.state = {
-      ...stateData,
-    };
-  }
-
-  componentDidMount() {
-    const username = global.config.username;
-    if (username != null && username !== undefined) {
-      this.setState({
-        username: username,
-        tnnt_id: global.config.tnnt_id,
-      });
-    }
   }
 
   handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
-        [name]: value
-      }
+        [name]: value,
+      },
     }));
     this.validateField(name, value);
   };
@@ -76,17 +58,17 @@ export default class Form1 extends React.Component {
     let formErrors = { ...this.state.formErrors };
 
     switch (fieldName) {
-      case 'tenantName':
-        formErrors.tenantName = value.trim() === '' ? 'Please enter Tenant Name' : '';
+      case "tenantName":
+        formErrors.tenantName = value.trim() === "" ? "Please enter Tenant Name" : "";
         break;
-      case 'fields2':
-        formErrors.fields2 = value.trim() === '' ? 'Please enter Fields2' : '';
+      case "fields2":
+        formErrors.fields2 = value.trim() === "" ? "Please enter Start Date" : "";
         break;
-      case 'fields3':
-        formErrors.fields3 = '';
+      case "fields4":
+        formErrors.fields4 = value.trim() === "" ? "Please enter Fields-4" : "";
         break;
-      case 'fields4':
-        formErrors.fields4 = value.trim() === '' ? 'Please enter Fields4' : '';
+      case "fields5":
+        formErrors.fields5 = value.trim() === "" ? "Please enter Field-5" : "";
         break;
       default:
         break;
@@ -97,70 +79,119 @@ export default class Form1 extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { tenantName, fields2, fields4 } = this.state.formData;
-    if (tenantName.trim() === '' || fields2.trim() === '' || fields4.trim() === '') {
-      alert('Please fill out all required fields.');
+    const { tenantName, fields2, fields3, fields4, fields5 } = this.state.formData;
+    const { id } = this.state;
+
+    if (!this.formIsValid()) {
+      alert("Please fill out all required fields.");
       return;
     }
-    console.log('Form is valid. Submitting...');
-    this.insertRecord(); // Call your record insertion function here
+
+    console.log("Form is valid. Submitting...");
+
+    const data = {
+      id: id || 32, 
+      clt_ref_id: "123",
+      tnnt_name: tenantName,
+      abbr: tenantName, 
+      database_name: "TestDB1",
+      user_name: "SmokeTest1",
+      admin_password: "SmokeTest1",
+      start_date: fields2,
+      end_date: fields3,
+      email_from_id: fields4,
+      whatsapp_from_id: fields5,
+      language_id: 1,
+      lc_status_id: 1,
+      is_active: "active",
+      created_by: "smoketest",
+    };
+
+    this.insertRecord(data);
   };
 
-  handleCheckboxChange = (index) => {
-    const microservices = [...this.state.microservices];
-    microservices[index].checked = !microservices[index].checked;
+  formIsValid() {
+    const { formData, formErrors } = this.state;
 
-    // Set start date to current date if checked, else set end date to current date
-    if (microservices[index].checked) {
-      microservices[index].startDate = new Date();
-    } else {
-      microservices[index].endDate = new Date();
-    }
+    return (
+      formData.tenantName.trim() !== "" &&
+      formData.fields4.trim() !== "" &&
+      formData.fields5.trim() !== "" &&
+      Object.values(formErrors).every((error) => error === "")
+    );
+  }
 
-    this.setState({ microservices });
-  };
-
-  handleDateChange = (index, dateType, date) => {
-    const microservices = [...this.state.microservices];
-    microservices[index][dateType] = date;
-    this.setState({ microservices });
-  };
-
-  insertRecord = () => {
-    const { proj_name } = this.state;
-
-    try {
-      const alertInitial = "";
-      let alertText = alertInitial;
-
-     
-
-      if (alertText !== alertInitial) {
+  insertRecord = (data) => {
+    fetch("https://apidev.finari.com/paTenantDet/insertRecord", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
         Swal.fire({
-          title: "Fill these fields:\n",
-          html:
-            '<pre style="display: flex;text-align: justify;flex-direction: column;align-items: center;line-height: 1.5">' +
-            alertText +
-            "</pre>",
+          title: "Success!",
+          text: "Record inserted successfully",
+          icon: "success",
           confirmButtonColor: Colors.primaryColor,
           width: Colors.width,
           allowOutsideClick: false,
         });
-        return;
-      }
-
-      let data = {}; // You can define data handling logic here
-    } catch (err) {
-      Swal.fire({
-        text: err,
-        confirmButtonColor: Colors.red,
-        width: Colors.width,
-        allowOutsideClick: false,
+        
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to insert record",
+          icon: "error",
+          confirmButtonColor: Colors.red,
+          width: Colors.width,
+          allowOutsideClick: false,
+        });
       });
-      this.setState({ is_loading: false });
-      console.log(err);
-    }
   };
+
+  handleCheckboxChange = (index) => {
+    const { microservices } = this.state;
+    const updatedMicroservices = [...microservices];
+
+    updatedMicroservices[index].checked = !updatedMicroservices[index].checked;
+
+    
+    if (updatedMicroservices[index].checked) {
+      updatedMicroservices[index].startDate = new Date();
+      updatedMicroservices[index].endDate = null;
+    } else {
+      updatedMicroservices[index].startDate = new Date();
+      updatedMicroservices[index].endDate = new Date();
+    }
+
+    this.setState({ microservices: updatedMicroservices });
+  };
+
+  handleDateChange = (index, dateType, date) => {
+    const { microservices } = this.state;
+    const updatedMicroservices = [...microservices];
+    updatedMicroservices[index][dateType] = date;
+    this.setState({ microservices: updatedMicroservices });
+  };
+
+  formatDate(date) {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
 
   renderProjectDetails = () => {
     const { formData, formErrors } = this.state;
@@ -185,27 +216,42 @@ export default class Form1 extends React.Component {
             </Col>
             <Col md={6}>
               <Form.Group className={styles.controlGroup1} controlId="fields2">
-                <Form.Label className={styles.required}>Fields-2</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Fields-2"
-                  value={formData.fields2}
+                <Form.Label className={styles.required}>Start Date</Form.Label>
+                <DatePicker
+                  selected={formData.fields2}
+                  onChange={(date) =>
+                    this.setState((prevState) => ({
+                      formData: {
+                        ...prevState.formData,
+                        fields2: date,
+                      },
+                    }))
+                  }
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="DD-MM-YYYY"
+                  className="form-control"
                   name="fields2"
-                  onChange={this.handleInputChange}
-                  required
                 />
                 <span className={styles.error}>{formErrors.fields2}</span>
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group className={styles.controlGroup1} controlId="fields3">
-                <Form.Label>Field-3</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Field-3"
-                  value={formData.fields3}
+                <Form.Label>End Date</Form.Label>
+                <DatePicker
+                  selected={formData.fields3}
+                  onChange={(date) =>
+                    this.setState((prevState) => ({
+                      formData: {
+                        ...prevState.formData,
+                        fields3: date,
+                      },
+                    }))
+                  }
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="DD-MM-YYYY"
+                  className="form-control"
                   name="fields3"
-                  onChange={this.handleInputChange}
                 />
               </Form.Group>
             </Col>
@@ -221,6 +267,20 @@ export default class Form1 extends React.Component {
                   required
                 />
                 <span className={styles.error}>{formErrors.fields4}</span>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className={styles.controlGroup1} controlId="fields5">
+                <Form.Label className={styles.required}>Field-5</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Field-5"
+                  value={formData.fields5}
+                  name="fields5"
+                  onChange={this.handleInputChange}
+                  required
+                />
+                <span className={styles.error}>{formErrors.fields5}</span>
               </Form.Group>
             </Col>
           </Row>
@@ -263,19 +323,25 @@ export default class Form1 extends React.Component {
                         <td>
                           <DatePicker
                             selected={ms.startDate}
-                            onChange={(date) => this.handleDateChange(index, 'startDate', date)}
+                            onChange={(date) =>
+                              this.handleDateChange(index, "startDate", date)
+                            }
                             dateFormat="dd-MM-yyyy"
                             placeholderText="DD-MM-YYYY"
                             className="form-control"
+                            disabled={!ms.checked}
                           />
                         </td>
                         <td>
                           <DatePicker
                             selected={ms.endDate}
-                            onChange={(date) => this.handleDateChange(index, 'endDate', date)}
+                            onChange={(date) =>
+                              this.handleDateChange(index, "endDate", date)
+                            }
                             dateFormat="dd-MM-yyyy"
                             placeholderText="DD-MM-YYYY"
                             className="form-control"
+                            disabled={!ms.checked}
                           />
                         </td>
                       </tr>
@@ -306,18 +372,14 @@ export default class Form1 extends React.Component {
 
   render() {
     const { setVisibility } = this.props;
-    const {
-      editable,
-      is_loading,
-      editableOrder,
-    } = this.state;
+    const { is_loading } = this.state;
 
     return (
       <div className={styles.mainWrapper}>
         {is_loading && (
           <div className={"loadingWrapper"}>
             <div className={"innerLoadingWrapper"}>
-              <div class="bouncing-loader">
+              <div className="bouncing-loader">
                 <div></div>
                 <div></div>
                 <div></div>
@@ -335,8 +397,11 @@ export default class Form1 extends React.Component {
           />
           <div>
             <p className={styles.title}>
-              {`${editable == undefined ? "Create" : editable ? "Update" : "View"
-                } Details`}
+              {this.state.editable === undefined
+                ? "Create Details"
+                : this.state.editable
+                ? "Update Details"
+                : "View Details"}
             </p>
 
             {this.renderCreateRecordForm()}
