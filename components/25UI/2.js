@@ -15,7 +15,6 @@ export default class Template extends React.Component {
       editable: props.editable,
       id: props.data,
       editableOrder: props.editableOrder,
-      proj_name: "",
       formData: {
         projectName: "",
         deliverableName: "",
@@ -120,160 +119,66 @@ export default class Template extends React.Component {
     console.log("Inserting Record:", data);
   };
 
-  renderBaseDetails = () => {
+  renderFormField = (label, name, maxLength) => {
     const { formData, formErrors } = this.state;
+    const currentLength = formData[name].length;
+
+    return (
+      <Row style={{ marginBottom: '15px' }}>
+        <Col md={12}>
+          <Form.Group controlId={name} style={{ margin: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Form.Label style={{ 
+                marginBottom: '0', 
+                width: '150px', 
+                fontWeight: 'bold', 
+                whiteSpace: 'nowrap', 
+                flexShrink: 0 
+              }}>
+                {label}:<span style={{ color: 'red' }}> *</span>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={`Enter ${label}`}
+                value={formData[name]}
+                name={name}
+                onChange={this.handleInputChange}
+                style={{
+                  flexGrow: 1,
+                  padding: '12px',
+                  fontSize: '16px',
+                  borderRadius: '5px',
+                  border: '1px solid #ccc',
+                  marginLeft: '20px'
+                }}
+                maxLength={maxLength}
+                required
+              />
+              <Form.Text
+                className="text-muted"
+                style={{ marginLeft: '10px', color: 'blue' }}
+              >
+                ({currentLength}/{maxLength})
+              </Form.Text>
+            </div>
+            <span style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+              {formErrors[name]}
+            </span>
+          </Form.Group>
+        </Col>
+      </Row>
+    );
+  };
+
+  renderBaseDetails = () => {
     return (
       <div className={styles.divMain2}>
         <fieldset className={styles.fieldsetWrapper}>
           <legend className={styles.legendsWrapper1}>Basic Details</legend>
-          <Row style={{ marginBottom: '15px' }}>
-            <Col md={12}>
-            <Form.Group controlId="projectName" style={{ margin: 0 }}>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Form.Label style={{ 
-      marginBottom: '0', 
-      width: '150px', 
-      fontWeight: 'bold', 
-      whiteSpace: 'nowrap', 
-      flexShrink: 0 
-    }}>
-      Project Name:<span style={{ color: 'red' }}> *</span>
-    </Form.Label>
-    <Form.Control
-      type="text"
-      placeholder="Enter Project Name"
-      value={formData.projectName}
-      name="projectName"
-      onChange={this.handleInputChange}
-      style={{
-        flexGrow: 1,
-        padding: '12px',
-        fontSize: '16px',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
-        marginLeft: '20px' 
-      }}
-      required
-    />
-  </div>
-  <span style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
-    {formErrors.projectName}
-  </span>
-</Form.Group>
-
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: '15px' }}>
-  <Col md={12}>
-    <Form.Group controlId="deliverableName" style={{ margin: 0 }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Form.Label style={{ 
-          marginBottom: '0', 
-          width: '150px', 
-          fontWeight: 'bold', 
-          whiteSpace: 'nowrap', 
-          flexShrink: 0 
-        }}>
-          Deliverable:<span style={{ color: 'red' }}> *</span>
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter Deliverable Name"
-          value={formData.deliverableName}
-          name="deliverableName"
-          onChange={this.handleInputChange}
-          style={{
-            flexGrow: 1, 
-            padding: '10px',
-            fontSize: '16px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            marginLeft: '20px' 
-          }}
-          required
-        />
-      </div>
-      <span style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
-        {formErrors.deliverableName}
-      </span>
-    </Form.Group>
-  </Col>
-</Row>
-
-<Row style={{ marginBottom: '15px' }}>
-  <Col md={12}>
-    <Form.Group controlId="billability" style={{ margin: 0 }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Form.Label style={{ 
-          marginBottom: '0', 
-          width: '150px', 
-          fontWeight: 'bold', 
-          whiteSpace: 'nowrap',
-          flexShrink: 0
-        }}>
-          Billability:<span style={{ color: 'red' }}> *</span>
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter Billability"
-          value={formData.billability}
-          name="billability"
-          onChange={this.handleInputChange}
-          style={{
-            flexGrow: 1,
-            padding: '10px',
-            fontSize: '16px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            marginLeft: '20px' 
-          }}
-          required
-        />
-      </div>
-      <span style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
-        {formErrors.billability}
-      </span>
-    </Form.Group>
-  </Col>
-</Row>
-
-<Row style={{ marginBottom: '15px' }}>
-  <Col md={12}>
-    <Form.Group controlId="stakeholders" style={{ margin: 0 }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Form.Label style={{ 
-          marginBottom: '0', 
-          width: '150px', 
-          fontWeight: 'bold', 
-          whiteSpace: 'nowrap',
-          flexShrink: 0
-        }}>
-          Stakeholders:<span style={{ color: 'red' }}> *</span>
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter Stakeholders"
-          value={formData.stakeholders}
-          name="stakeholders"
-          onChange={this.handleInputChange}
-          style={{
-            flexGrow: 1,
-            padding: '10px',
-            fontSize: '16px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            marginLeft: '20px' // Space between the label and the input field
-          }}
-          required
-        />
-      </div>
-      <span style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
-        {formErrors.stakeholders}
-      </span>
-    </Form.Group>
-  </Col>
-</Row>
-
+          {this.renderFormField("Project Name", "projectName", 50)}
+          {this.renderFormField("Deliverable", "deliverableName", 50)}
+          {this.renderFormField("Billability", "billability", 50)}
+          {this.renderFormField("Stakeholders", "stakeholders", 50)}
         </fieldset>
       </div>
     );
@@ -290,7 +195,7 @@ export default class Template extends React.Component {
               <Form.Group controlId="plannedStartDate" style={{ margin: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Form.Label style={{ marginBottom: '0', width: '150px' }}>
-                     StartDate:
+                    Start Date:
                   </Form.Label>
                   <Form.Control
                     type="date"
@@ -317,7 +222,7 @@ export default class Template extends React.Component {
               <Form.Group controlId="plannedEndDate" style={{ margin: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Form.Label style={{ marginBottom: '0', width: '150px' }}>
-                     EndDate:
+                    End Date:
                   </Form.Label>
                   <Form.Control
                     type="date"
@@ -344,7 +249,7 @@ export default class Template extends React.Component {
               <Form.Group controlId="plannedDuration" style={{ margin: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Form.Label style={{ marginBottom: '0', width: '150px' }}>
-                     Duration (Days):
+                    Duration (Days):
                   </Form.Label>
                   <Form.Control
                     type="number"
@@ -372,7 +277,7 @@ export default class Template extends React.Component {
               <Form.Group controlId="plannedBudget" style={{ margin: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Form.Label style={{ marginBottom: '0', width: '150px' }}>
-                     Budget:
+                    Budget:
                   </Form.Label>
                   <Form.Control
                     type="number"
@@ -405,7 +310,7 @@ export default class Template extends React.Component {
       <Form onSubmit={this.handleSubmit} className={styles.formWrapper}>
         {this.renderBaseDetails()}
         {this.renderTimelinesAndBudget()}
-        
+      
       </Form>
     );
   };
@@ -451,16 +356,16 @@ export default class Template extends React.Component {
               <p>View mode is not implemented yet.</p>
             )}
           </div>
-            <div>
-              <p style={{ color: "red", marginLeft: "3px", fontSize: "15px" }}>
-                * are mandatory fields
-              </p>
+          <div>
+            <p style={{ color: "red", marginLeft: "3px", fontSize: "15px" }}>
+              * are mandatory fields
+            </p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <Button type="submit" style={{ marginRight: '20px' }}>
+                Create
+              </Button>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-          <Button type="submit" style={{ marginRight: '20px' }}>
-            Create
-          </Button>
-        </div>
         </div>
       </div>
     );

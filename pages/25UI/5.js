@@ -2,8 +2,8 @@ import React from "react";
 import styles from "../../styles/pages.module.css";
 import SideMenu from "../../components/sideMenu/sideMenu";
 import Head from "../../components/head";
-import Component from "../../components/25UI/2";
-export default class temp extends React.Component {
+import Component from "../../components/25UI/5";
+export default class temps extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

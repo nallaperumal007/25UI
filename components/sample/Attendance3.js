@@ -68,16 +68,36 @@ export default class Attendance3 extends React.Component {
       <div className={styles.divMain1}>
         <fieldset className={styles.fieldsetWrapper}>
           <legend className={styles.legendsWrapper1}>Basic Details</legend>
-          <Row className={styles.formRow}>
-            <Col md={6}>
-              <Form.Group className={styles.controlGroup1} controlId="date">
-                <Form.Label className={styles.required}>Date</Form.Label>
-                <DatePicker
-                  selected={date}
-                  onChange={this.handleDateChange}
-                  className="form-control"
-                  required
-                />
+          <Row style={{ marginBottom: "15px" }}>
+            <Col md={12}>
+              <Form.Group controlId="date" style={{ margin: 0 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Form.Label
+                    style={{
+                      marginBottom: "0",
+                      width: "150px",
+                      fontWeight: "bold",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Date:<span style={{ color: "red" }}> *</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={date.toISOString().split('T')[0]} // Format date to yyyy-mm-dd
+                    onChange={(e) => this.handleDateChange(new Date(e.target.value))}
+                    style={{
+                      flexGrow: 1,
+                      padding: "10px",
+                      fontSize: "16px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      marginLeft: "20px",
+                    }}
+                    required
+                  />
+                </div>
               </Form.Group>
             </Col>
           </Row>
@@ -85,6 +105,7 @@ export default class Attendance3 extends React.Component {
       </div>
     );
   };
+
 
   renderRoleUserDetails = () => {
     const { staffAttendance, attendance } = this.state;

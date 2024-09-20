@@ -18,6 +18,7 @@ const unProtectedPath = {
     "/25UI/2": true,
     "/25UI/3": true,
     "/25UI/4": true,
+    "/25UI/5": true,
     "/25UI/Skill": true,
    
 };

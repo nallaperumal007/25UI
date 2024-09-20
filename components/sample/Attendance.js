@@ -1,9 +1,7 @@
 import React from "react";
-import { Form, Row, Col, Button, Table } from "react-bootstrap";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../../styles/createcom.module.css";
+import styles from "../../styles/createcom2.module.css";
+import { Form, Row, Col, Table, Button } from "react-bootstrap";
 
 export default class Form3 extends React.Component {
   constructor(props) {
@@ -46,21 +44,41 @@ export default class Form3 extends React.Component {
   };
 
   renderProjectDetails = () => {
-    const { proj_name, type, date } = this.state;
+    const { date } = this.state;
     return (
       <div className={styles.divMain1}>
         <fieldset className={styles.fieldsetWrapper}>
           <legend className={styles.legendsWrapper1}>Basic Details</legend>
-          <Row className={styles.formRow}>
-            <Col md={6}>
-              <Form.Group className={styles.controlGroup1} controlId="date">
-                <Form.Label className={styles.required}>Date</Form.Label>
-                <DatePicker
-                  selected={date}
-                  onChange={this.handleDateChange}
-                  className="form-control"
-                  required
-                />
+          <Row style={{ marginBottom: "15px" }}>
+            <Col md={12}>
+              <Form.Group controlId="date" style={{ margin: 0 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Form.Label
+                    style={{
+                      marginBottom: "0",
+                      width: "150px",
+                      fontWeight: "bold",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Date:<span style={{ color: "red" }}> *</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={date.toISOString().split('T')[0]} // Format date to yyyy-mm-dd
+                    onChange={(e) => this.handleDateChange(new Date(e.target.value))}
+                    style={{
+                      flexGrow: 1,
+                      padding: "10px",
+                      fontSize: "16px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      marginLeft: "20px",
+                    }}
+                    required
+                  />
+                </div>
               </Form.Group>
             </Col>
           </Row>
@@ -70,7 +88,6 @@ export default class Form3 extends React.Component {
   };
 
   renderRoleUserDetails = () => {
-    const { makerRole, checker1Role, checker2Role } = this.state;
     return (
       <div className={styles.divMain1}>
         <fieldset className={styles.fieldsetWrapper}>
@@ -124,7 +141,7 @@ export default class Form3 extends React.Component {
 
   render() {
     const { setVisibility } = this.props;
-    const { editable, is_loading } = this.state;
+    const { is_loading } = this.state;
 
     return (
       <div className={styles.mainWrapper}>
@@ -149,7 +166,7 @@ export default class Form3 extends React.Component {
           />
           <div>
             <p className={styles.title}>
-              {`${editable === undefined ? "Create" : editable ? "Update" : "View"
+              {`${this.props.editable === undefined ? "Create" : this.props.editable ? "Update" : "View"
                 } Details`}
             </p>
 

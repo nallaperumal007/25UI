@@ -40,6 +40,10 @@ export default class Form2 extends React.Component {
     this.setState({ [roleName]: e.target.value });
   };
 
+  handleTextChange = (e) => {
+    this.setState({ proj_name: e.target.value });
+  };
+
   renderProjectDetails = () => {
     const { proj_name, type } = this.state;
     return (
@@ -54,9 +58,13 @@ export default class Form2 extends React.Component {
                   type="text"
                   placeholder="Enter name"
                   value={proj_name}
-                  onChange={(e) => this.setState({ proj_name: e.target.value })}
+                  onChange={this.handleTextChange}
+                  maxLength={50} // Limit input to 50 characters
                   required
                 />
+                <Form.Text className="text-muted">
+                  {`${proj_name.length}/50`}
+                </Form.Text>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -173,7 +181,7 @@ export default class Form2 extends React.Component {
 
   render() {
     const { setVisibility } = this.props;
-    const { editable, is_loading } = this.state;
+    const { is_loading } = this.state;
 
     return (
       <div className={styles.mainWrapper}>
@@ -198,7 +206,7 @@ export default class Form2 extends React.Component {
           />
           <div>
             <p className={styles.title}>
-              {`${editable === undefined ? "Create" : editable ? "Update" : "View"
+              {`${this.props.editable === undefined ? "Create" : this.props.editable ? "Update" : "View"
                 } Details`}
             </p>
 
